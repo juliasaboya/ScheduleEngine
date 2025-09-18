@@ -74,4 +74,60 @@ public extension ScheduleEngine {
 
     return plan
   }
+    
+    func buildWeeklySchedule<S: ScheduleSlot>(days: ClosedRange<Date>, slotsByDay: [Date: [S]], plansByDay: [Date: [PlannedActivity]], candidates: ((Date) -> Bool)? = nil, calendar: Calendar = .current, locale: Locale = Locale(identifier: "pt_BR")) -> [Date: (label: String, items: [(time: String, activity: String)])] {
+
+      // 1) Lista de dias normalizados e filtrados
+      let dayKeys: [Date] = {
+        var out: [Date] = []
+        var cur = calendar.startOfDay(for: days.lowerBound)
+        let end = calendar.startOfDay(for: days.upperBound)
+        while cur <= end {
+          let include = candidates?(cur) ?? true
+          if include { out.append(cur) }
+          guard let next = calendar.date(byAdding: .day, value: 1, to: cur) else { break }
+          cur = next
+        }
+        return out
+      }()
+
+      // 2) Para cada dia: montar label + parear atividades aos horários dos slots
+      var result: [Date: (label: String, items: [(time: String, activity: String)])] = [:]
+
+      for day in dayKeys {
+        // label "Segunda-feira, 23/09/2025"
+        let label = weekdayLabel(for: day, calendar: calendar, locale: locale)
+
+        // Índice slotId -> range para achar horário da atividade
+        let slots = (slotsByDay[day] ?? []).sorted { $0.range.start < $1.range.start }
+        let slotById: [UUID: TimeRange] = Dictionary(uniqueKeysWithValues: slots.map { ($0.id, $0.range) })
+
+        // Pegar apenas atividades planejadas para este dia
+        let todaysPlan = (plansByDay[day] ?? [])
+
+        // Itens: (HH:mm–HH:mm, nome)
+        var items: [(String, String)] = []
+
+        // Ordena por horário do slot (quando possível) para exibir cronológico
+        let sortedPlan = todaysPlan.sorted { a, b in
+          let ra = slotById[a.slotId]?.start ?? .distantFuture
+          let rb = slotById[b.slotId]?.start ?? .distantFuture
+          return ra < rb
+        }
+
+        for p in sortedPlan {
+          if let range = slotById[p.slotId] {
+            let time = timeSignature(of: range, calendar: calendar)
+            items.append((time, p.activityName))
+          } else {
+            // Caso raro: activity aponta para um slotId que não existe no dia
+            items.append(("--:--–--:--", p.activityName))
+          }
+        }
+
+        result[day] = (label, items)
+      }
+
+      return result
+    }
 }

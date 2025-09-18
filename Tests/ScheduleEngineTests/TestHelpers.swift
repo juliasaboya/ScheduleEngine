@@ -23,3 +23,20 @@ func makeSlot(_ day: Date, startH: Int, startM: Int, endH: Int, endM: Int) -> Te
 func minutes(_ range: TimeRange) -> Int {
     max(0, Int(range.end.timeIntervalSince(range.start) / 60))
 }
+
+func weekdayLabel(_ day: Date, calendar: Calendar = .current, locale: Locale = Locale(identifier: "pt_BR")) -> String {
+    let fmt = DateFormatter()
+    fmt.calendar = calendar
+    fmt.locale = locale
+    fmt.dateFormat = "EEEE, dd/MM/yyyy"
+    let raw = fmt.string(from: day)
+    return raw.prefix(1).uppercased() + raw.dropFirst()
+}
+
+func timeSignature(_ range: TimeRange, calendar: Calendar = .current) -> String {
+    let cs = calendar.dateComponents([.hour, .minute], from: range.start)
+    let ce = calendar.dateComponents([.hour, .minute], from: range.end)
+    let hs = cs.hour ?? 0, ms = cs.minute ?? 0
+    let he = ce.hour ?? 0, me = ce.minute ?? 0
+    return String(format: "%02d:%02d–%02d:%02d", hs, ms, he, me)
+}
