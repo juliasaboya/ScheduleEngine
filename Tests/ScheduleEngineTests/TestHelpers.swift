@@ -24,19 +24,50 @@ func minutes(_ range: TimeRange) -> Int {
     max(0, Int(range.end.timeIntervalSince(range.start) / 60))
 }
 
-func weekdayLabel(_ day: Date, calendar: Calendar = .current, locale: Locale = Locale(identifier: "pt_BR")) -> String {
-    let fmt = DateFormatter()
-    fmt.calendar = calendar
-    fmt.locale = locale
-    fmt.dateFormat = "EEEE, dd/MM/yyyy"
-    let raw = fmt.string(from: day)
-    return raw.prefix(1).uppercased() + raw.dropFirst()
-}
+private func dumpSchedule(
+    _ schedule: [Date: [PlannedActivity]],
+    slotsById: [UUID: TimeRange],
+    timeZone: TimeZone = TimeZone(identifier: "America/Fortaleza")!,
+    locale: Locale = Locale(identifier: "pt_BR")
+) {
+    var cal = Calendar(identifier: .gregorian); cal.timeZone = timeZone
 
-func timeSignature(_ range: TimeRange, calendar: Calendar = .current) -> String {
-    let cs = calendar.dateComponents([.hour, .minute], from: range.start)
-    let ce = calendar.dateComponents([.hour, .minute], from: range.end)
-    let hs = cs.hour ?? 0, ms = cs.minute ?? 0
-    let he = ce.hour ?? 0, me = ce.minute ?? 0
-    return String(format: "%02d:%02d–%02d:%02d", hs, ms, he, me)
+    let dayFmt = DateFormatter()
+    dayFmt.locale = locale
+    dayFmt.timeZone = timeZone
+    // Vamos montar manualmente "Segunda 27/08/2025"
+    dayFmt.dateFormat = "dd/MM/yyyy"
+
+    let timeFmt = DateFormatter()
+    timeFmt.locale = locale
+    timeFmt.timeZone = timeZone
+    timeFmt.dateFormat = "HH:mm"
+
+    func shortWeekdayName(_ date: Date) -> String {
+        let w = cal.component(.weekday, from: date) // 1=Dom ... 7=Sáb
+        // Nomes curtos:
+        switch w {
+        case 1: return "Domingo"
+        case 2: return "Segunda"
+        case 3: return "Terça"
+        case 4: return "Quarta"
+        case 5: return "Quinta"
+        case 6: return "Sexta"
+        case 7: return "Sábado"
+        default: return "Dia"
+        }
+    }
+
+    for day in schedule.keys.sorted() {
+        let label = "\(shortWeekdayName(day))  \(dayFmt.string(from: day))"
+        print(label)
+        for p in schedule[day] ?? [] {
+            guard let slot = slotsById[p.slotId] else { continue }
+            let start = slot.start
+            let plannedEnd = min(start.addingTimeInterval(TimeInterval(p.duration * 60)), slot.end)
+            print("  - \(p.activityName) \(timeFmt.string(from: start)) - \(timeFmt.string(from: plannedEnd))")
+        }
+        // linha em branco entre dias
+        print("")
+    }
 }
