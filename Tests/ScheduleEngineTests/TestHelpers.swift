@@ -8,9 +8,12 @@
 import Foundation
 @testable import ScheduleEngine
 
+// Fuso do TEMPLATE (origem) — UTC
+let TEMPLATE_TZ = TimeZone(secondsFromGMT: 0)!
+
 func makeDate(_ day: Date, hour: Int, minute: Int) -> Date {
     var cal = Calendar(identifier: .gregorian)
-    cal.timeZone = TimeZone(secondsFromGMT: 0)! // evita variações por timezone/DST nos testes
+    cal.timeZone = TEMPLATE_TZ // mantém UTC para o template
     return cal.date(bySettingHour: hour, minute: minute, second: 0, of: day)!
 }
 
@@ -24,50 +27,31 @@ func minutes(_ range: TimeRange) -> Int {
     max(0, Int(range.end.timeIntervalSince(range.start) / 60))
 }
 
-private func dumpSchedule(
-    _ schedule: [Date: [PlannedActivity]],
-    slotsById: [UUID: TimeRange],
-    timeZone: TimeZone = TimeZone(identifier: "America/Fortaleza")!,
-    locale: Locale = Locale(identifier: "pt_BR")
-) {
-    var cal = Calendar(identifier: .gregorian); cal.timeZone = timeZone
+// (Opcional) criar slots diretamente num calendário local do teste, se precisar:
+func makeLocalSlot(_ day: Date, startH: Int, startM: Int, endH: Int, endM: Int, calendar: Calendar) -> TestSlot {
+    let start = calendar.date(bySettingHour: startH, minute: startM, second: 0, of: day)!
+    let end   = calendar.date(bySettingHour: endH,   minute: endM,   second: 0, of: day)!
+    return TestSlot(range: TimeRange(start: start, end: end))
+}
 
-    let dayFmt = DateFormatter()
-    dayFmt.locale = locale
-    dayFmt.timeZone = timeZone
-    // Vamos montar manualmente "Segunda 27/08/2025"
-    dayFmt.dateFormat = "dd/MM/yyyy"
+// Formatadores (ok manter)
+func fmtDay(_ d: Date, cal: Calendar) -> String {
+    let df = DateFormatter()
+    df.calendar = cal
+    df.locale = Locale(identifier: "pt_BR")
+    df.timeZone = cal.timeZone
+    df.dateFormat = "EEEE dd/MM/yyyy"
+    return df.string(from: d)
+}
 
-    let timeFmt = DateFormatter()
-    timeFmt.locale = locale
-    timeFmt.timeZone = timeZone
-    timeFmt.dateFormat = "HH:mm"
-
-    func shortWeekdayName(_ date: Date) -> String {
-        let w = cal.component(.weekday, from: date) // 1=Dom ... 7=Sáb
-        // Nomes curtos:
-        switch w {
-        case 1: return "Domingo"
-        case 2: return "Segunda"
-        case 3: return "Terça"
-        case 4: return "Quarta"
-        case 5: return "Quinta"
-        case 6: return "Sexta"
-        case 7: return "Sábado"
-        default: return "Dia"
-        }
+func fmtActivity(_ p: PlannedActivity, slotsById: [UUID: TimeRange], cal: Calendar) -> String {
+    guard let r = slotsById[p.slotId] else {
+        return "  - \(p.activityName) [slot desconhecido] (\(p.duration)min)"
     }
-
-    for day in schedule.keys.sorted() {
-        let label = "\(shortWeekdayName(day))  \(dayFmt.string(from: day))"
-        print(label)
-        for p in schedule[day] ?? [] {
-            guard let slot = slotsById[p.slotId] else { continue }
-            let start = slot.start
-            let plannedEnd = min(start.addingTimeInterval(TimeInterval(p.duration * 60)), slot.end)
-            print("  - \(p.activityName) \(timeFmt.string(from: start)) - \(timeFmt.string(from: plannedEnd))")
-        }
-        // linha em branco entre dias
-        print("")
-    }
+    let tf = DateFormatter()
+    tf.calendar = cal
+    tf.locale = Locale(identifier: "pt_BR")
+    tf.timeZone = cal.timeZone
+    tf.dateFormat = "HH:mm"
+    return "  - \(p.activityName) \(tf.string(from: r.start))-\(tf.string(from: r.end)) (\(p.duration)min)"
 }
