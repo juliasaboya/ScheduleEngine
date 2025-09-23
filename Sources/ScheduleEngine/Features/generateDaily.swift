@@ -7,7 +7,7 @@
 
 import Foundation
 public extension ScheduleEngine {
-    
+
     /// Gera um cronograma de atividades ([PlannedActivity]) para um dia específico considerando uma coleção de janelas de horário e objetivos do usuário.
 
     func generateDailySchedule<A: SchedulableActivity, S: ScheduleSlot>(
@@ -33,6 +33,8 @@ public extension ScheduleEngine {
         var minutesPlanned = 0
         var plan: [PlannedActivity] = []
 
+        var lastChosenId: UUID? = nil
+
         let totalSlotsMinutes = slots.reduce(0) { $0 + slotMinutes($1) }
         guard totalSlotsMinutes >= dailyMin else {
             throw ScheduleEngineError.slotsMinutesNotEnough
@@ -44,11 +46,14 @@ public extension ScheduleEngine {
 
             let remainingToMin = max(0, dailyMin - minutesPlanned)
             let remainingToMax = max(0, dailyMax - minutesPlanned)
-
             guard remainingToMax > 0 else { break }
 
-            let candidates = userList.filter { $0.minDuration <= min(availableSlotMinutes, remainingToMax) }
-            guard !candidates.isEmpty else { continue }
+            let baseCandidates = userList.filter { $0.minDuration <= min(availableSlotMinutes, remainingToMax) }
+            guard !baseCandidates.isEmpty else { continue }
+
+            let nonRepeating = baseCandidates.filter { $0.id != lastChosenId }
+            let candidates = nonRepeating.isEmpty ? baseCandidates : nonRepeating
+
 
             func score(_ a: A) -> Int {
                 let matches = a.goals.intersection(userGoals).count
@@ -69,7 +74,6 @@ public extension ScheduleEngine {
             /// determina o máximo tempo que pode ser alocado pra uma atividade dentre
             /// -
             let slotMaxPossibleDuration = min(availableSlotMinutes, activityMax, remainingToMax)
-
             guard slotMaxPossibleDuration >= activityMin else { continue }
 
             let plannedDuration: Int = {
@@ -80,10 +84,13 @@ public extension ScheduleEngine {
                 }
             }()
 
-            plan.append(.init(activityName: chosen.name, duration: plannedDuration, slotId: slot.id))
+
+            plan.append(.init(activityId: chosen.id, slotId: slot.id, plannedMinutes: plannedDuration))
 
             /// minutesPlanned tem que estar entre 30 e 50 minutos
             minutesPlanned += plannedDuration
+            lastChosenId = chosen.id
+
         }
 
         return plan

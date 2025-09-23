@@ -215,7 +215,7 @@ public extension ScheduleEngine {
             replicatedSlotsById[newSlotId] = TimeRange(start: newStart, end: newEnd)
 
             bucket[day, default: []].append(
-              PlannedActivity(activityName: p.activityName, duration: p.duration, slotId: newSlotId)
+                PlannedActivity(activityId: p.activityId, slotId: newSlotId, plannedMinutes: p.plannedMinutes)
             )
           }
         }

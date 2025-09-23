@@ -30,19 +30,27 @@ public protocol UserGoalMarker {}
 public struct TimeRange: Equatable, Codable {
     public let start: Date
     public let end: Date
-    public init(start: Date, end: Date) { self.start = start; self.end = end }
+    public init(start: Date, end: Date) {
+        self.start = start; self.end = end
+    }
+    public func durationInMinutes() -> Int {
+        max(0, Int(end.timeIntervalSince(start) / 60))
+    }
 }
 
 public struct PlannedActivity: Identifiable, Equatable, Codable {
     public let id: UUID
-    public let activityName: String
-    public let duration: Int
+    public let activityId: UUID
     public let slotId: UUID
-    public init(id: UUID = UUID(), activityName: String, duration: Int, slotId: UUID) {
+    public let plannedMinutes: Int
+    public init(id: UUID = UUID(), activityId: UUID, slotId: UUID, plannedMinutes: Int) {
         self.id = id
-        self.activityName = activityName
-        self.duration = duration
+        self.activityId = activityId
         self.slotId = slotId
+        self.plannedMinutes = plannedMinutes
+    }
+    public func activityName(from namesById: [UUID: String]) -> String {
+        namesById[activityId] ?? "<desconhecido>"
     }
 }
 

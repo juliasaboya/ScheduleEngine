@@ -50,11 +50,11 @@ struct Main {
 
             print("Cronograma de \(String(format: "%02d/%02d/%04d", D, M, Y))\n")
             var total = 0
-
+            let namesById: [UUID: String] = Dictionary(uniqueKeysWithValues: activities.map { ($0.id, $0.name) })
             for item in plan {
                 guard let s = slotById[item.slotId] else { continue }
-                print("[\(fmtRange(s.range))] -> \(item.activityName) (\(item.duration) min)")
-                total += item.duration
+                print("[\(fmtRange(s.range))] -> \(item.activityName(from: namesById)) (\(item.plannedMinutes) min)")
+                total += item.plannedMinutes
             }
 
             print("\nTotal do dia: \(total) min \(total >= 30 && total <= 50 ? "✅" : "⚠️")")
