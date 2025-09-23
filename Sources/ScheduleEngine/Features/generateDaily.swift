@@ -7,11 +7,14 @@
 
 import Foundation
 public extension ScheduleEngine {
+    
+    /// Gera um cronograma de atividades ([PlannedActivity]) para um dia específico considerando uma coleção de janelas de horário e objetivos do usuário.
 
     func generateDailySchedule<A: SchedulableActivity, S: ScheduleSlot>(
         day: Date,
         slots: [S],
         userGoals: Set<A.Goal>,
+        activityLocations: Set<A.Location>,
         userList: [A],
         options: EngineOptions = .init(dailyMinimumMinutes: 30, dailyMaximumMinutes: 50)
     ) throws -> [PlannedActivity] {
