@@ -1,0 +1,22 @@
+{
+    "configurations": [
+        {
+            "type": "swift",
+            "request": "launch",
+            "args": [],
+            "cwd": "${workspaceFolder:ScheduleEngine}",
+            "name": "Debug ScheduleEngineDemo",
+            "program": "${workspaceFolder:ScheduleEngine}/.build/debug/ScheduleEngineDemo",
+            "preLaunchTask": "swift: Build Debug ScheduleEngineDemo"
+        },
+        {
+            "type": "swift",
+            "request": "launch",
+            "args": [],
+            "cwd": "${workspaceFolder:ScheduleEngine}",
+            "name": "Release ScheduleEngineDemo",
+            "program": "${workspaceFolder:ScheduleEngine}/.build/release/ScheduleEngineDemo",
+            "preLaunchTask": "swift: Build Release ScheduleEngineDemo"
+        }
+    ]
+}
