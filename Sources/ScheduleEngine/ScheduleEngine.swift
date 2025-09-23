@@ -82,6 +82,102 @@ public extension ScheduleEngine {
        case reschedule  // sempre força reposição até atingir o total (se houver dias livres)
        case drop        // nunca força reposição (aceita menos dias)
      }
+    
+    /// Constrói um planejamento semanal a partir de um **template diário** de atividades,
+    /// replicando as atividades (e seus horários) para `k` dias distribuídos dentro de um
+    /// intervalo `[startDate, endDate)`, respeitando dias permitidos, exclusões de dias,
+    /// fuso horário de destino e fuso do template.
+    ///
+    /// A seleção de dias funciona assim:
+    /// - Calcula todos os dias candidatos na janela, no fuso de **destino** (`timeZone`),
+    ///   opcionalmente filtrando por `allowedWeekdays`.
+    /// - Seleciona `k` dias **intercalados** (espalhados de forma uniforme e centralizada nas faixas).
+    /// - Aplica as **exclusões** somente após a seleção (para permitir que `.drop` reduza a contagem).
+    /// - Dependendo de `excludedHandling`, pode **repor** (backfill) dias até atingir `k`.
+    ///
+    /// A replicação de horários funciona assim:
+    /// - Cada `PlannedActivity` do `plannedTemplate` referencia um slot original em `templateSlotsById`.
+    /// - Extrai `hour:minute:second` do início do slot no fuso de **origem** (`templateTimeZone` se definido; caso contrário, `timeZone`).
+    /// - Reconstrói o mesmo horário de “parede” (wall-clock) no **dia de destino**, no fuso de **destino** (`timeZone`),
+    ///   preservando a **duração** do slot.
+    /// - Gera um **novo `UUID`** de slot para cada réplica e o devolve em `replicatedSlotsById`.
+    ///
+    /// - Parameters:
+    ///   - plannedTemplate: Lista de atividades do **template** (cada item usa `slotId` para apontar o horário no template).
+    ///   - templateSlotsById: Mapa de **slots do template** (`UUID` → `TimeRange`) que contém os horários originais.
+    ///   - startDate: Início da janela (inclusive). A seleção percorre dias usando `startOfDay` no fuso de destino.
+    ///   - endDate: Fim da janela (**exclusivo**). Dias iguais a `startOfDay(endDate)` não entram.
+    ///   - rawDaysToPlan: Número desejado de dias a planejar. É **clampado para 3…6** internamente e passa a ser `k`.
+    ///   - allowedWeekdays: Conjunto opcional de dias da semana permitidos (valores de `Calendar.component(.weekday)`, **1=Dom … 7=Sáb**).
+    ///   - excludedDays: Conjunto de datas a excluir. Cada data é **normalizada** para `startOfDay` no fuso de destino antes da comparação.
+    ///   - inCal: Calendário base (default: gregoriano). Será copiado e ajustado para o fuso de destino e origem conforme necessário.
+    ///   - timeZone: **Fuso de destino** do planejamento (onde o bucket final é construído).
+    ///   - templateTimeZone: **Fuso de origem** do template. Se `nil`, utiliza `timeZone`.
+    ///   - excludedHandling: Política para lidar com dias **excluídos** após a seleção:
+    ///       - `.reschedule`: sempre tenta repor (backfill) até atingir `k`.
+    ///       - `.drop`: nunca repõe (o total pode ficar < `k`).
+    ///       - `.auto`: repõe **apenas quando `k == 3`**.
+    ///
+    /// - Returns: Uma tupla com:
+    ///   - `bucket`: `[Date: [PlannedActivity]]` — atividades replicadas agrupadas por **dia (startOfDay)** no fuso de destino.
+    ///               As listas de cada dia são **ordenadas** pelo horário de início do slot.
+    ///   - `replicatedSlotsById`: `[UUID: TimeRange]` — slots **novos** gerados na replicação (um UUID por réplica),
+    ///               com `TimeRange` já no fuso de destino.
+    ///
+    /// - Important:
+    ///   - O algoritmo de seleção usa distribuição **centralizada** para intercalar dias (evita pares consecutivos quando possível).
+    ///   - `endDate` é **exclusivo**; use um dia a mais caso queira incluir o último dia integral.
+    ///   - `excludedDays` é comparado após normalização para `startOfDay` no fuso de **destino**.
+    ///   - `allowedWeekdays` usa a convenção de `Calendar`: **1=Domingo … 7=Sábado**.
+    ///   - Essa função **não faz “escolha” de atividades** por metas/score; ela **replica** o template com novos slots.
+    ///
+    /// - Complexity:
+    ///   - Construção de candidatos: O(d) onde d é o número de dias no intervalo.
+    ///   - Replicação: O(d × p) onde p é o número de atividades no `plannedTemplate` (apenas para os dias selecionados).
+    ///
+    /// - Example:
+    /// ```swift
+    /// var cal = Calendar(identifier: .gregorian)
+    /// cal.locale = Locale(identifier: "pt_BR")
+    /// cal.timeZone = TimeZone(identifier: "America/Fortaleza")!
+    ///
+    /// // Janela: segunda 00:00 até próxima segunda 00:00 (exclusivo)
+    /// let weekStart = cal.date(from: DateComponents(year: 2025, month: 9, day: 22))!  // seg
+    /// let weekEnd   = cal.date(byAdding: .day, value: 7, to: weekStart)!
+    ///
+    /// // Template: duas atividades ancoradas em slots 18:30–19:00 e 20:00–20:20
+    /// let slot1 = UUID(), slot2 = UUID()
+    /// let templateSlots: [UUID: TimeRange] = [
+    ///   slot1: TimeRange(start: cal.date(bySettingHour: 18, minute: 30, second: 0, of: weekStart)!,  // hora do template
+    ///                    end:   cal.date(bySettingHour: 19,  minute: 0,  second: 0, of: weekStart)!),
+    ///   slot2: TimeRange(start: cal.date(bySettingHour: 20, minute: 0,  second: 0, of: weekStart)!,
+    ///                    end:   cal.date(bySettingHour: 20, minute: 20, second: 0, of: weekStart)!),
+    /// ]
+    ///
+    /// let template: [PlannedActivity] = [
+    ///   .init(activityName: "Leitura",     duration: 30, slotId: slot1),
+    ///   .init(activityName: "Alongamento", duration: 20, slotId: slot2)
+    /// ]
+    ///
+    /// // Planejar 4 dias intercalados, apenas em dias úteis, sem exclusões.
+    /// let result = buildWeeklySchedule(
+    ///   plannedTemplate: template,
+    ///   slotsById: templateSlots,
+    ///   startDate: weekStart,
+    ///   endDate: weekEnd,
+    ///   daysToPlan: 4,
+    ///   allowedWeekdays: [2,3,4,5,6], // 2=Seg … 6=Sex
+    ///   excludedDays: [],
+    ///   calendar: cal,
+    ///   timeZone: cal.timeZone,
+    ///   templateTimeZone: cal.timeZone,
+    ///   excludedHandling: .drop
+    /// )
+    ///
+    /// // result.bucket trará 4 dias (ex.: Seg, Qua, Sex, …), cada um com as duas atividades em ordem.
+    /// // result.replicatedSlotsById conterá os novos slots (um UUID por réplica) com horários no fuso de destino.
+    /// ```
+    ///
 
     func buildWeeklySchedule(
         plannedTemplate: [PlannedActivity],
