@@ -14,7 +14,7 @@ public extension ScheduleEngine {
         day: Date,
         slots: [S],
         userGoals: Set<A.Goal>,
-        activityLocations: Set<A.Location>,
+        activityLocations: Set<A.LocationType>,
         userList: [A],
         options: EngineOptions = .init(dailyMinimumMinutes: 30, dailyMaximumMinutes: 50)
     ) throws -> [PlannedActivity] {

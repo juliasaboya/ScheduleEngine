@@ -11,13 +11,13 @@ import Foundation
 
 public protocol SchedulableActivity {
   associatedtype Goal: Hashable
-    associatedtype Location: Hashable
+    associatedtype LocationType: Hashable
   var id: UUID { get }
   var name: String { get }
   var minDuration: Int { get }
   var maxDuration: Int { get }
   var goals: Set<Goal> { get }
-  var locations: Set<Location> { get }
+  var locations: Set<LocationType> { get }
 }
 
 public protocol ScheduleSlot {
