@@ -65,6 +65,12 @@ public enum ScheduleEngineError: Error {
 
 public enum Intensity: String, Codable, Sendable { case low, medium, high }
 
+public enum ExcludedHandling {
+   case auto        // regra: força reposição se daysToPlan == 3; caso contrário, não força
+   case reschedule  // sempre força reposição até atingir o total (se houver dias livres)
+   case drop        // nunca força reposição (aceita menos dias)
+ }
+
 
 extension Set where Element == AnyHashable {
     init<T: Hashable>(one value: T) {
