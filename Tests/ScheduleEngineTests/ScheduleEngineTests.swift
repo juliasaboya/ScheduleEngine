@@ -148,7 +148,7 @@ final class ScheduleEngineTests: XCTestCase {
             slotsById: slotsById,
             startDate: weekStart,
             endDate: weekEnd,
-            daysToPlan: 3,
+            daysToPlan: 4,
             allowedWeekdays: nil,
             excludedDays: [],
             calendar: cal,

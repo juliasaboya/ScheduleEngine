@@ -135,12 +135,16 @@ public extension ScheduleEngine {
 
         guard !allCandidates.isEmpty else { return ([:], [:]) }
 
-        // 2) Seleciona k dias intercalados a partir de TODOS os candidatos (floor).
-        let n = allCandidates.count
-        let step = max(1.0, Double(n) / Double(k))
-        var pickedDays: [Date] = (0..<k).map { i in
-          allCandidates[min(n - 1, Int(floor(Double(i) * step)))]
-        }
+          // 2) Seleciona k dias intercalados (centralizado em cada faixa)
+          let n = allCandidates.count
+          guard k > 0 else { return ([:], [:]) }
+
+          let step = Double(n) / Double(k)
+          var pickedDays: [Date] = (0..<k).map { i in
+            let pos = (Double(i) + 0.5) * step // centrado
+            let idx = min(n - 1, Int(floor(pos)))
+            return allCandidates[idx]
+          }
 
         // De-dupe preservando ordem
         var uniquePicked: [Date] = []
