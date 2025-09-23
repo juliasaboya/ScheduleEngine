@@ -13,12 +13,12 @@ enum TestGoal: Hashable {
 }
 
 struct TestActivity: SchedulableActivity {
-    typealias GoalType = TestGoal
-    var id: UUID = UUID()
-    var name: String
-    var minDuration: Int
-    var maxDuration: Int
-    var goals: Set<TestGoal>
+  typealias Goal = TestGoal
+  var goals: Set<TestGoal>
+  var id = UUID()
+  var name: String
+  var minDuration: Int
+  var maxDuration: Int
 }
 
 struct TestSlot: ScheduleSlot {

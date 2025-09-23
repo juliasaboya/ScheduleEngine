@@ -16,12 +16,12 @@ enum DemoGoal: Hashable {
 }
 
 struct DemoActivity: SchedulableActivity {
-  typealias GoalType = DemoGoal
-  var id: UUID = UUID()
+  typealias Goal = DemoGoal
+  var goals: Set<DemoGoal>
+  var id = UUID()
   var name: String
   var minDuration: Int
   var maxDuration: Int
-  var goals: Set<DemoGoal>
 }
 
 struct DemoSlot: ScheduleSlot {
