@@ -9,17 +9,15 @@
 
 import Foundation
 
-public struct ScheduleEngine {
-  public init() {}
-}
-
 public protocol SchedulableActivity {
-  associatedtype GoalType: Hashable
+  associatedtype Goal: Hashable
+    associatedtype Location: Hashable
   var id: UUID { get }
   var name: String { get }
   var minDuration: Int { get }
   var maxDuration: Int { get }
-  var goals: Set<GoalType> { get }
+  var goals: Set<Goal> { get }
+  var locations: Set<Location> { get }
 }
 
 public protocol ScheduleSlot {
@@ -48,12 +46,14 @@ public struct PlannedActivity: Identifiable, Equatable, Codable {
     }
 }
 
-
 public struct EngineOptions: Sendable {
   public var dailyMinimumMinutes: Int
+  public var dailyMaximumMinutes: Int
   public var avoidConsecutiveRepeat: Bool
-  public init(dailyMinimumMinutes: Int = 50, avoidConsecutiveRepeat: Bool = true) {
+
+  public init(dailyMinimumMinutes: Int, dailyMaximumMinutes: Int, avoidConsecutiveRepeat: Bool = true) {
     self.dailyMinimumMinutes = dailyMinimumMinutes
+    self.dailyMaximumMinutes = dailyMaximumMinutes
     self.avoidConsecutiveRepeat = avoidConsecutiveRepeat
   }
 }
@@ -61,8 +61,26 @@ public struct EngineOptions: Sendable {
 public enum ScheduleEngineError: Error {
     case noSlots
     case noActivities
+    case slotsMinutesNotEnough
+
 }
 
 public enum Intensity: String, Codable, Sendable { case low, medium, high }
 
+public enum ExcludedHandling {
+   case auto        // regra: força reposição se daysToPlan == 3; caso contrário, não força
+   case reschedule  // sempre força reposição até atingir o total (se houver dias livres)
+   case drop        // nunca força reposição (aceita menos dias)
+ }
+
+
+extension Set where Element == AnyHashable {
+    init<T: Hashable>(one value: T) {
+        self.init([AnyHashable(value)])
+    }
+
+    init<S: Sequence>(many source: S) where S.Element: Hashable {
+        self.init(source.map(AnyHashable.init))
+    }
+}
 

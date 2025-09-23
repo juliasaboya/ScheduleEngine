@@ -1,0 +1,28 @@
+{
+  "configurations" : [
+    {
+      "id" : "87217BE7-DB53-49C9-B030-C80C8F643DE9",
+      "name" : "Test Scheme Action",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "targetForVariableExpansion" : {
+      "containerPath" : "container:",
+      "identifier" : "ScheduleEngineDemo",
+      "name" : "ScheduleEngineDemo"
+    }
+  },
+  "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:",
+        "identifier" : "ScheduleEngineTests",
+        "name" : "ScheduleEngineTests"
+      }
+    }
+  ],
+  "version" : 1
+}
