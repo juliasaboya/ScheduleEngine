@@ -3,7 +3,7 @@
 
 import Foundation
 
-public struct ScheduleEngine {
-     public init() {}
-}
+    public struct ScheduleEngine {
+        public init() {}
+    }
 
