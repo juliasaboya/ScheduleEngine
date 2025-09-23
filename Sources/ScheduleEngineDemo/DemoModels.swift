@@ -12,19 +12,24 @@ import ScheduleEngine
 // MARK: - Tipos demo (conformam aos protocolos do engine)
 
 enum DemoGoal: Hashable {
-  case loseWeight, gainWeight, quitSedentarism
+    case loseWeight, gainWeight, quitSedentarism
+}
+enum DemoLocationType: Hashable {
+    case home, gym, outside
 }
 
 struct DemoActivity: SchedulableActivity {
-  typealias Goal = DemoGoal
-  var goals: Set<DemoGoal>
-  var id = UUID()
-  var name: String
-  var minDuration: Int
-  var maxDuration: Int
+    typealias Goal = DemoGoal
+    typealias LocationType = DemoLocationType
+    var goals: Set<DemoGoal>
+    var locations: Set<LocationType>
+    var id = UUID()
+    var name: String
+    var minDuration: Int
+    var maxDuration: Int
 }
 
 struct DemoSlot: ScheduleSlot {
-  var id: UUID = UUID()
-  var range: TimeRange
+    var id: UUID = UUID()
+    var range: TimeRange
 }
