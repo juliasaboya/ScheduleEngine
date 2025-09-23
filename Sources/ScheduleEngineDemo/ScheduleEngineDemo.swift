@@ -27,12 +27,12 @@ struct Main {
         ]
 
         let activities: [DemoActivity] = [
-            .init(goals: [.loseWeight], name: "caminhada leve", minDuration: 15, maxDuration: 20),
-            .init(goals: [.loseWeight], name: "corrida",        minDuration: 15, maxDuration: 20),
-            .init(goals: [.loseWeight], name: "polichinelos",   minDuration: 5, maxDuration: 10),
-            .init(goals: [.quitSedentarism], name: "abdominais", minDuration: 5, maxDuration: 10),
-            .init(goals: [.gainWeight], name: "musculação sup.", minDuration: 15, maxDuration: 50),
-            .init(goals: [.gainWeight, .loseWeight, .quitSedentarism], name: "alongamento completo", minDuration: 3, maxDuration: 15),
+            .init(goals: [.loseWeight], locations: [.home], name: "caminhada leve", minDuration: 15, maxDuration: 20),
+            .init(goals: [.loseWeight], locations: [.home], name: "corrida",        minDuration: 15, maxDuration: 20),
+            .init(goals: [.loseWeight], locations: [.home], name: "polichinelos",   minDuration: 5, maxDuration: 10),
+            .init(goals: [.quitSedentarism], locations: [.home], name: "abdominais", minDuration: 5, maxDuration: 10),
+            .init(goals: [.gainWeight], locations: [.home], name: "musculação sup.", minDuration: 15, maxDuration: 50),
+            .init(goals: [.gainWeight, .loseWeight, .quitSedentarism], locations: [.home], name: "alongamento completo", minDuration: 3, maxDuration: 15),
 
         ]
 
@@ -42,6 +42,7 @@ struct Main {
                 day: Date(),
                 slots: slots,
                 userGoals: [.loseWeight],
+                activityLocations: [.home],
                 userList: activities
             )
 
