@@ -8,12 +8,9 @@
 import Foundation
 @testable import ScheduleEngine
 
-// Fuso do TEMPLATE (origem) — UTC
-let TEMPLATE_TZ = TimeZone(secondsFromGMT: 0)!
-
 func makeDate(_ day: Date, hour: Int, minute: Int) -> Date {
     var cal = Calendar(identifier: .gregorian)
-    cal.timeZone = TEMPLATE_TZ // mantém UTC para o template
+    cal.timeZone = TimeZone(secondsFromGMT: 0)! 
     return cal.date(bySettingHour: hour, minute: minute, second: 0, of: day)!
 }
 
