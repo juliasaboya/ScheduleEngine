@@ -25,7 +25,7 @@ final class SlotsTests: XCTestCase {
         let plan = try engine.generateDailySchedule(
             day: day,
             slots: slots,
-            userGoals: Set<TestGoal>([.loseWeight]), activityLocations: Set<TestLocationType>([.gym]),
+            userGoals: Set<TestGoal>([.loseWeight]), possibleLocations: Set<TestLocationType>([.gym]),
             userList: activities
         )
         var total = 0
@@ -46,7 +46,7 @@ final class SlotsTests: XCTestCase {
         let plan = try engine.generateDailySchedule(
             day: day,
             slots: slots,
-            userGoals: Set<TestGoal>([.loseWeight]), activityLocations: Set<TestLocationType>([.home]),
+            userGoals: Set<TestGoal>([.loseWeight]), possibleLocations: Set<TestLocationType>([.home]),
             userList: activities
         )
         var total = 0
@@ -67,7 +67,7 @@ final class SlotsTests: XCTestCase {
         let plan = try engine.generateDailySchedule(
             day: day,
             slots: slots,
-            userGoals: Set<TestGoal>([.loseWeight]), activityLocations: Set<TestLocationType>([.home]),
+            userGoals: Set<TestGoal>([.loseWeight]), possibleLocations: Set<TestLocationType>([.home]),
             userList: activities
         )
         var total = 0
@@ -90,7 +90,7 @@ final class SlotsTests: XCTestCase {
             try engine.generateDailySchedule(
                 day: day,
                 slots: slots,
-                userGoals: [.loseWeight],activityLocations: Set<TestLocationType>([.home]),
+                userGoals: [.loseWeight],possibleLocations: Set<TestLocationType>([.home]),
                 userList: activities
             )
 

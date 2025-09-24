@@ -42,7 +42,7 @@ struct Main {
                 day: Date(),
                 slots: slots,
                 userGoals: [.loseWeight],
-                activityLocations: [.home],
+                possibleLocations: [.home],
                 userList: activities
             )
 
