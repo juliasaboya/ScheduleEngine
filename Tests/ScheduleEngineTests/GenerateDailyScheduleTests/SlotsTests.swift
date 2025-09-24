@@ -11,11 +11,11 @@ final class SlotsTests: XCTestCase {
     let engine = ScheduleEngine()
     let day = makeDate(Date(timeIntervalSince1970: 0), hour: 0, minute: 0)
     let activities: [TestActivity] = [
-        .init(goals: [.loseWeight], name: "caminhada leve",       minDuration: 15, maxDuration: 60),
-        .init(goals: [.loseWeight], name: "corrida",              minDuration: 20, maxDuration: 40),
-        .init(goals: [.loseWeight], name: "polichinelos",         minDuration: 10, maxDuration: 20),
-        .init(goals: [.quitSedentarism], name: "abdominais",           minDuration: 10, maxDuration: 20),
-        .init(goals: [.gainWeight], name: "musculação superiores",minDuration: 20, maxDuration: 60),
+        .init(goals: [.loseWeight], locations: [.home], name: "caminhada leve",       minDuration: 15, maxDuration: 60),
+        .init(goals: [.loseWeight], locations: [.home], name: "corrida",              minDuration: 20, maxDuration: 40),
+        .init(goals: [.loseWeight], locations: [.home], name: "polichinelos",         minDuration: 10, maxDuration: 20),
+        .init(goals: [.quitSedentarism], locations: [.home], name: "abdominais",           minDuration: 10, maxDuration: 20),
+        .init(goals: [.gainWeight], locations: [.home], name: "musculação superiores",minDuration: 20, maxDuration: 60),
     ]
     func test_If_Minimum_Is_Met_With_1Slot() throws {
         let slots: [TestSlot] = [
@@ -25,12 +25,12 @@ final class SlotsTests: XCTestCase {
         let plan = try engine.generateDailySchedule(
             day: day,
             slots: slots,
-            userGoals: Set<TestGoal>([.loseWeight]),
+            userGoals: Set<TestGoal>([.loseWeight]), activityLocations: Set<TestLocationType>([.gym]),
             userList: activities
         )
         var total = 0
         for item in plan {
-            total += item.duration
+            total += item.plannedMinutes
         }
 
         XCTAssertGreaterThanOrEqual(total, 30)
@@ -46,12 +46,12 @@ final class SlotsTests: XCTestCase {
         let plan = try engine.generateDailySchedule(
             day: day,
             slots: slots,
-            userGoals: Set<TestGoal>([.loseWeight]),
+            userGoals: Set<TestGoal>([.loseWeight]), activityLocations: Set<TestLocationType>([.home]),
             userList: activities
         )
         var total = 0
         for item in plan {
-            total += item.duration
+            total += item.plannedMinutes
         }
 
         XCTAssertGreaterThanOrEqual(total, 30)
@@ -67,12 +67,12 @@ final class SlotsTests: XCTestCase {
         let plan = try engine.generateDailySchedule(
             day: day,
             slots: slots,
-            userGoals: Set<TestGoal>([.loseWeight]),
+            userGoals: Set<TestGoal>([.loseWeight]), activityLocations: Set<TestLocationType>([.home]),
             userList: activities
         )
         var total = 0
         for item in plan {
-            total += item.duration
+            total += item.plannedMinutes
         }
 
         XCTAssertGreaterThanOrEqual(total, 30)
@@ -90,7 +90,7 @@ final class SlotsTests: XCTestCase {
             try engine.generateDailySchedule(
                 day: day,
                 slots: slots,
-                userGoals: [.loseWeight],
+                userGoals: [.loseWeight],activityLocations: Set<TestLocationType>([.home]),
                 userList: activities
             )
 
