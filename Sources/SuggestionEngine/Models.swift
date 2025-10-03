@@ -44,7 +44,7 @@ public struct SetOption: Sendable {
 }
 
 // O objeto de retorno final: uma atividade com uma duração específica sugerida.
-public struct SchedulableActivity<ActivityType: ActivityProtocol> {
+public struct SuggestedActivity<ActivityType: ActivityProtocol> {
     public let activity: ActivityType
     public let suggestedDuration: Int
     

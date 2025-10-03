@@ -14,14 +14,14 @@ public final class SuggestionEngine {
     ///   - user: Um objeto que conforma com `UserProtocol`, contendo as preferências do usuário.
     ///   - options: Um `SetOption` com valores que sobrepõem temporariamente as preferências do usuário.
     ///   - repository: Um objeto que conforma com `ActivityRepositoryProtocol` e fornece as atividades.
-    /// - Returns: Um array de `SchedulableActivity` contendo as melhores sugestões ordenadas por relevância.
+    /// - Returns: Um array de `SuggestedActivity` contendo as melhores sugestões ordenadas por relevância.
 
     public static func generateDailySuggestions<U: UserProtocol, A: ActivityProtocol, R: ActivityRepositoryProtocol>(
         user: U,
         options: SetOption,
         repository: R,
         limit: Int? = 4
-    ) -> [SchedulableActivity<A>] where R.ActivityType == A {
+    ) -> [SuggestedActivity<A>] where R.ActivityType == A {
         
         // 1. Unificar preferências.
         let goals = options.goals ?? user.goals
@@ -44,7 +44,7 @@ public final class SuggestionEngine {
         }
         
         // 3. Algoritmo de pontuação e filtragem.
-        let scoredActivities = activitiesToConsider.compactMap { activity -> (activity: SchedulableActivity<A>, score: Int)? in
+        let scoredActivities = activitiesToConsider.compactMap { activity -> (activity: SuggestedActivity<A>, score: Int)? in
             guard activity.minTime <= availableTime else { return nil }
             
             let suggestedDuration = min(availableTime, activity.maxTime)
@@ -67,8 +67,8 @@ public final class SuggestionEngine {
             
             guard score > 0 else { return nil }
             
-            let schedulableActivity = SchedulableActivity(activity: activity, suggestedDuration: suggestedDuration)
-            return (activity: schedulableActivity, score: score)
+            let suggestedActivity = SuggestedActivity(activity: activity, suggestedDuration: suggestedDuration)
+            return (activity: suggestedActivity, score: score)
         }
         
         // 4. Ordena e retorna as 4 melhores.
