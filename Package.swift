@@ -7,21 +7,16 @@ let package = Package(
     name: "ScheduleEngine",
     products: [
         .library(
-            name: "ScheduleEngine",
-            targets: ["ScheduleEngine"]),
-        .executable(name: "ScheduleEngineDemo", targets: ["ScheduleEngineDemo"])
+            name: "SuggestionEngine",
+            targets: ["SuggestionEngine"]),
 
     ],
     targets: [
         .target(
-            name: "ScheduleEngine"),
-        .executableTarget(
-              name: "ScheduleEngineDemo",
-              dependencies: ["ScheduleEngine"]
-            ),
+            name: "SuggestionEngine",
+            dependencies: []),
         .testTarget(
-            name: "ScheduleEngineTests",
-            dependencies: ["ScheduleEngine"]
-        ),
+            name: "SuggestionEngineTests",
+            dependencies: ["SuggestionEngine"]),
     ]
 )
