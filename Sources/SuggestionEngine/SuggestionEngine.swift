@@ -14,12 +14,13 @@ public final class SuggestionEngine {
     ///   - user: Um objeto que conforma com `UserProtocol`, contendo as preferências do usuário.
     ///   - options: Um `SetOption` com valores que sobrepõem temporariamente as preferências do usuário.
     ///   - repository: Um objeto que conforma com `ActivityRepositoryProtocol` e fornece as atividades.
-    /// - Returns: Um array de `SchedulableActivity` contendo as 4 melhores sugestões ordenadas por relevância.
+    /// - Returns: Um array de `SchedulableActivity` contendo as melhores sugestões ordenadas por relevância.
 
     public static func generateDailySuggestions<U: UserProtocol, A: ActivityProtocol, R: ActivityRepositoryProtocol>(
         user: U,
         options: SetOption,
-        repository: R
+        repository: R,
+        limit: Int? = 4
     ) -> [SchedulableActivity<A>] where R.ActivityType == A {
         
         // 1. Unificar preferências.
@@ -31,14 +32,14 @@ public final class SuggestionEngine {
 
         let allActivities = repository.fetchAllActivities()
         
-        // 2. Determinar quais atividades considerar.
+        // 2. Determina quais atividades considerar.
         let activitiesToConsider: [A]
         if !user.activitiesIDs.isEmpty {
-            // Se o usuário tem IDs preferidos, filtrar o universo total de atividades por esses IDs.
+            // Se o usuário tem IDs preferidos, filtra o universo total de atividades por esses IDs.
             let userPreferredIDs = Set(user.activitiesIDs)
             activitiesToConsider = allActivities.filter { userPreferredIDs.contains($0.id) }
         } else {
-            // Se não, considerar todas as atividades.
+            // Se não, considera todas as atividades.
             activitiesToConsider = allActivities
         }
         
@@ -72,8 +73,13 @@ public final class SuggestionEngine {
         
         // 4. Ordena e retorna as 4 melhores.
         let sortedSuggestions = scoredActivities.sorted { $0.score > $1.score }
-        let top4Activities = Array(sortedSuggestions.prefix(4).map { $0.activity })
         
-        return top4Activities
+        if let limit = limit {
+            let suggestions = Array(sortedSuggestions.prefix(limit).map { $0.activity })
+            return suggestions
+        } else {
+            let suggestions = sortedSuggestions.map { $0.activity }
+            return suggestions
+        }
     }
 }
