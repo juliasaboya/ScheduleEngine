@@ -7,93 +7,41 @@
 import Foundation
 
 struct MockData {
-    // Usuário
-    struct User {
-        let tempoDisponível: Int
-        let objetivos: Objectives
-        let intensidade: Intensity
-        let local: Location
-        let activities: [UUID]
+    
+    // --- Usuários para diferentes cenários de teste ---
+    static var usuarioFocadoEmMusculo: User {
+        User(
+            availableTime: 60,
+            goals: [.ganharMusculo],
+            intensity: .medium,
+            locations: [.academia],
+            activitiesIDs: [musculacao.id]
+        )
     }
     
-    // Atividades
-    struct Activity {
-        let id: UUID
-        let nome: String
-        let objetivos: [Objectives]
-        let intensidade: Intensity
-        let local: [Location]
-        let tempoMin: Int
-        let tempoMax: Int
-        var isActive: Bool
-    }
-    
-    // Locais
-    enum Location: String, Codable {
-        case casa, academia, arLivre
-    }
-    
-    // Objetivos
-    enum Objectives: String, Codable {
-        case ganharPeso, perderPeso, ganharMusculo
-    }
-    
-    // Intensidades
-    enum Intensity: String, Codable {
-        case baixa, média, alta
+    static var usuarioSemPreferencias: User {
+        User(
+            availableTime: 30,
+            goals: [.perderPeso],
+            intensity: .low,
+            locations: [.casa],
+            activitiesIDs: []
+        )
     }
     
     static let user: User = User(
-        tempoDisponível: 30,
-        objetivos: .ganharMusculo,
-        intensidade: .média,
-        local: .casa,
-        activities: userActivitiesIDs
+        availableTime: 30,
+        goals: [.ganharPeso],
+        intensity: .medium,
+        locations: [.casa],
+        activitiesIDs: [ballet.id, musculacao.id, pilates.id]
     )
     
-    static let activities: [Activity] = [
-        Activity(
-            id: UUID(),
-            nome: "Musculação",
-            objetivos: [.ganharMusculo],
-            intensidade: .média,
-            local: [.academia],
-            tempoMin: 20,
-            tempoMax: 70,
-            isActive: true
-        ),
-        Activity(
-            id: UUID(),
-            nome: "Ballet",
-            objetivos: [.ganharPeso],
-            intensidade: .média,
-            local: [.arLivre],
-            tempoMin: 15,
-            tempoMax: 50,
-            isActive: false
-        ),
-        Activity(
-            id: UUID(),
-            nome: "Pilates",
-            objetivos: [.perderPeso],
-            intensidade: .alta,
-            local: [.casa],
-            tempoMin: 30,
-            tempoMax: 40,
-            isActive: false
-        )
-    ]
+    // --- Atividades para usar nos mocks ---
+    static let musculacao = Activity(id: UUID(), name: "Musculação", goals: [.ganharMusculo], intensity: .medium, locations: [.academia], minTime: 20, maxTime: 70)
+    static let ballet = Activity(id: UUID(), name: "Ballet", goals: [.ganharPeso], intensity: .medium, locations: [.arLivre], minTime: 15, maxTime: 50)
+    static let pilates = Activity(id: UUID(), name: "Pilates", goals: [.perderPeso], intensity: .high, locations: [.casa], minTime: 30, maxTime: 40)
     
-    static var userActivities: [Activity] {
-        activities.filter { $0.isActive }
-    }
+    static let activities: [Activity] = [musculacao, ballet, pilates]
     
-    static var userActivitiesIDs: [UUID] {
-        userActivities.map { $0.id }
-    }
-    
-    static func generateDailySuggestions(for: User) -> [Activity] {
-        //
-        return []
-    }
 }
