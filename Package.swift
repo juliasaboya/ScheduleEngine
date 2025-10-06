@@ -4,7 +4,7 @@
 import PackageDescription
 
 let package = Package(
-    name: "ScheduleEngine",
+    name: "SuggestionEngine",
     products: [
         .library(
             name: "SuggestionEngine",
