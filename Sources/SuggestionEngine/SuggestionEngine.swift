@@ -8,6 +8,6 @@ import Foundation
 
 public final class SuggestionEngine {
     
-    private init() {}
+    public init() {}
     
 }
