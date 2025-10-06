@@ -5,7 +5,7 @@
 //  Created by Rapha Vidal on 06/10/25.
 //
 
-extension SuggestionEngine {
+extension SuggestionEngineService {
     
     /// - Parameters:
     ///   - user: Um objeto que conforma com `UserProtocol`, contendo as preferências do usuário.

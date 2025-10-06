@@ -28,7 +28,7 @@ final class SuggestionEngineTests: XCTestCase {
         let user = MockData.MockUser(availableTime: 18, goals: [.improveFitness], intensity: .medium, locations: [.outdoor], activitiesIDs: [])
         
         // Act
-        let suggestions = SuggestionEngine.generateDailySuggestions(user: user, options: SetOption(), repository: mockRepository)
+        let suggestions = SuggestionEngineService.generateDailySuggestions(user: user, options: SetOption(), repository: mockRepository)
         
         print(suggestions)
         // Assert
@@ -41,7 +41,7 @@ final class SuggestionEngineTests: XCTestCase {
         let user = MockData.MockUser(availableTime: 60, goals: [.IncreaseFlexibilityAndMobility], intensity: .low, locations: [.home], activitiesIDs: [MockData.ballet.id])
         
         // Act
-        let suggestions = SuggestionEngine.generateDailySuggestions(user: user, options: SetOption(), repository: mockRepository)
+        let suggestions = SuggestionEngineService.generateDailySuggestions(user: user, options: SetOption(), repository: mockRepository)
         
         // Assert
         XCTAssertEqual(suggestions.count, 1, "Apenas a atividade preferida do usuário (Yoga) deveria ser considerada.")
@@ -57,8 +57,8 @@ final class SuggestionEngineTests: XCTestCase {
         let user2 = MockData.MockUser(availableTime: 60, goals: [.improveFitness], intensity: .medium, locations: [.outdoor], activitiesIDs: [])
         
         // Act
-        let suggestions1 = SuggestionEngine.generateDailySuggestions(user: user1, options: SetOption(), repository: mockRepository)
-        let suggestions2 = SuggestionEngine.generateDailySuggestions(user: user2, options: SetOption(), repository: mockRepository)
+        let suggestions1 = SuggestionEngineService.generateDailySuggestions(user: user1, options: SetOption(), repository: mockRepository)
+        let suggestions2 = SuggestionEngineService.generateDailySuggestions(user: user2, options: SetOption(), repository: mockRepository)
         
         // Assert
         XCTAssertEqual(suggestions1.first?.suggestedDuration, 30)
@@ -72,7 +72,7 @@ final class SuggestionEngineTests: XCTestCase {
         let options = SetOption(intensity: .high)
         
         // Act
-        let suggestions = SuggestionEngine.generateDailySuggestions(user: user, options: options, repository: mockRepository)
+        let suggestions = SuggestionEngineService.generateDailySuggestions(user: user, options: options, repository: mockRepository)
         
         // Assert
         // A musculação (intensidade .high) deve ter a maior pontuação por causa do override da opção.

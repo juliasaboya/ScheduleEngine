@@ -6,7 +6,7 @@
 //
 import Foundation
 
-public final class SuggestionEngine {
+public final class SuggestionEngineService {
     
     public init() {}
     
