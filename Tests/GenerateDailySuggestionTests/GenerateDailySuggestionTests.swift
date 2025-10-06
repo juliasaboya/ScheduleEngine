@@ -38,7 +38,7 @@ final class SuggestionEngineTests: XCTestCase {
     
     func test_generateSuggestions_whenUserHasSpecificActivityIDs_returnsOnlyThoseActivities() {
         // Arrange
-        let user = MockData.MockUser(availableTime: 60, goals: [.IncreaseFlexibilityAndMobility], intensity: .low, locations: [.home], activitiesIDs: [MockData.ballet.id])
+        let user = MockData.MockUser(availableTime: 60, goals: [.increaseFlexibilityAndMobility], intensity: .low, locations: [.home], activitiesIDs: [MockData.ballet.id])
         
         // Act
         let suggestions = SuggestionEngineService.generateDailySuggestions(user: user, options: SetOption(), repository: mockRepository)

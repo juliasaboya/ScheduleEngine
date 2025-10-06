@@ -9,6 +9,11 @@ import Foundation
 // MARK: - Enums
 
 // Objetivos
-public enum Goal: String, Codable, Sendable {
-    case loseWeight, gainMuscle, improveFitness, IncreaseFlexibilityAndMobility, healthAndWellBeing, socialization
+public enum Goal: Int16, Codable, Sendable {
+    case loseWeight = 0
+    case gainMuscle = 1
+    case improveFitness = 2
+    case increaseFlexibilityAndMobility = 3
+    case healthAndWellBeing = 4
+    case socialization = 5
 }

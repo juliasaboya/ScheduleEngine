@@ -9,6 +9,6 @@ import Foundation
 // MARK: - Enums
 
 // Locais
-public enum Location: String, Codable, Sendable {
-    case home, gym, work, outdoor
+public enum Location: Int16, Codable, Sendable {
+    case home = 1, gym = 2, work = 3, outdoor = 4
 }
