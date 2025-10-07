@@ -27,7 +27,7 @@ struct MockData {
         var activitiesIDs: [UUID]
     }
     
-    static let ballet = MockActivity(id: UUID(), name: "Ballet", goals: [.IncreaseFlexibilityAndMobility, .gainMuscle], intensity: .medium, locations: [.gym], minTime: 20, maxTime: 60)
+    static let ballet = MockActivity(id: UUID(), name: "Ballet", goals: [.increaseFlexibilityAndMobility, .gainMuscle], intensity: .medium, locations: [.gym], minTime: 20, maxTime: 60)
     static let bodybuilding = MockActivity(id: UUID(), name: "Musculação", goals: [.gainMuscle], intensity: .high, locations: [.gym], minTime: 45, maxTime: 90)
     static let running = MockActivity(id: UUID(), name: "Corrida", goals: [.improveFitness, .loseWeight], intensity: .high, locations: [.outdoor], minTime: 15, maxTime: 45)
     
