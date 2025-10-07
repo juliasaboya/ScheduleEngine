@@ -9,13 +9,13 @@ import Foundation
 // MARK: - Enums
 
 // Locais
-public enum Location: Int16, Codable, Sendable {
+public enum LocationType: Int16, Codable, Sendable {
     case home = 1, gym = 2, work = 3, outdoor = 4
     
     public init(from decoder: Decoder) throws {
         let container = try decoder.singleValueContainer()
         if let intValue = try? container.decode(Int16.self) {
-            self = Location(rawValue: intValue) ?? .home
+            self = LocationType(rawValue: intValue) ?? .home
         } else if let stringValue = try? container.decode(String.self) {
             switch stringValue {
             case "home": self = .home
@@ -26,7 +26,7 @@ public enum Location: Int16, Codable, Sendable {
                 throw DecodingError.dataCorruptedError(in: container, debugDescription: "Valor inválido: \(stringValue)")
             }
         } else {
-            throw DecodingError.dataCorruptedError(in: container, debugDescription: "Tipo inválido para Location")
+            throw DecodingError.dataCorruptedError(in: container, debugDescription: "Tipo inválido para LocationType")
         }
     }
 

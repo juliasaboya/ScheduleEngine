@@ -14,7 +14,7 @@ struct MockData {
         let name: String // Propriedade extra para facilitar os asserts
         let goals: [Goal]
         let intensity: Intensity
-        let locations: [Location]
+        let locations: [LocationType]
         let minTime: Int
         let maxTime: Int
     }
@@ -23,7 +23,7 @@ struct MockData {
         var availableTime: Int
         var goals: [Goal]
         var intensity: Intensity
-        var locations: [Location]
+        var locations: [LocationType]
         var activitiesIDs: [UUID]
     }
     
