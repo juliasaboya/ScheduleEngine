@@ -10,7 +10,7 @@ public protocol ActivityProtocol {
     var id: UUID { get }
     var goals: [Goal] { get }
     var intensity: Intensity { get }
-    var locations: [Location] { get }
+    var locations: [LocationType] { get }
     var minTime: Int { get }
     var maxTime: Int { get }
 }

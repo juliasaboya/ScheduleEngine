@@ -13,9 +13,9 @@ public struct SetOption: Sendable {
     public var availableTime: Int?
     public var goals: [Goal]?
     public var intensity: Intensity?
-    public var locations: [Location]?
+    public var locations: [LocationType]?
     
-    public init(availableTime: Int? = nil, goals: [Goal]? = nil, intensity: Intensity? = nil, locations: [Location]? = nil) {
+    public init(availableTime: Int? = nil, goals: [Goal]? = nil, intensity: Intensity? = nil, locations: [LocationType]? = nil) {
         self.availableTime = availableTime
         self.goals = goals
         self.intensity = intensity
