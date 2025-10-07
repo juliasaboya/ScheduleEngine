@@ -9,12 +9,14 @@ import Foundation
 // MARK: - Enums
 
 // Intensidades
-public enum Intensity: Int16, Comparable, CaseIterable, Sendable, Codable {
+
+public enum Intensity: Int16, Comparable, CaseIterable, Sendable, Decodable, Encodable {
     case low = 1, medium = 2, high = 3
+
     public static func < (lhs: Intensity, rhs: Intensity) -> Bool {
         return lhs.rawValue < rhs.rawValue
     }
-    
+
     public init(from decoder: Decoder) throws {
         let container = try decoder.singleValueContainer()
         if let intValue = try? container.decode(Int16.self) {
@@ -25,10 +27,12 @@ public enum Intensity: Int16, Comparable, CaseIterable, Sendable, Codable {
             case "medium": self = .medium
             case "high": self = .high
             default:
-                throw DecodingError.dataCorruptedError(in: container, debugDescription: "Valor inválido: \(stringValue)")
+                throw DecodingError.dataCorruptedError(in: container,
+                    debugDescription: "Valor inválido: \(stringValue)")
             }
         } else {
-            throw DecodingError.dataCorruptedError(in: container, debugDescription: "Tipo inválido para Goal")
+            throw DecodingError.dataCorruptedError(in: container,
+                debugDescription: "Tipo inválido para Intensity")
         }
     }
 
