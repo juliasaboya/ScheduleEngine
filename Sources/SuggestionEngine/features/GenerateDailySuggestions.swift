@@ -17,8 +17,11 @@ extension SuggestionEngineService {
         user: U,
         options: SetOption,
         repository: R,
-        limit: Int? = 4
+        limit: Int? = 4,
+        scoringWeight: ScoringWeights? = nil
     ) -> [SuggestedActivity<A>] where R.ActivityType == A {
+        
+        let weights = scoringWeight ?? ScoringWeights.default
         
         // 1. Unificar preferências.
         let goals = options.goals ?? user.goals
@@ -50,17 +53,17 @@ extension SuggestionEngineService {
             // Pontuação por objetivos (Peso 10)
             let userGoalsSet = Set(goals)
             let matchingGoalsCount = activity.goals.filter { userGoalsSet.contains($0) }.count
-            score += matchingGoalsCount * 10
+            score += matchingGoalsCount * weights.goalMatch
             
             // Pontuação por local (Peso 5)
             let userLocationsSet = Set(locations)
             let hasLocationMatch = !activity.locations.filter { userLocationsSet.contains($0) }.isEmpty
-            if hasLocationMatch { score += 5 }
+            if hasLocationMatch { score += weights.locationMatch }
             
             // Pontuação por intensidade (Peso 5 para exato, 2 para próximo)
             let intensityDifference = abs(intensity.rawValue - activity.intensity.rawValue)
-            if intensityDifference == 0 { score += 5 }
-            else if intensityDifference == 1 { score += 2 }
+            if intensityDifference == 0 { score += weights.exactIntensityMatch }
+            else if intensityDifference == 1 { score += weights.adjacentIntensityMatch }
             
             guard score > 0 else { return nil }
             
