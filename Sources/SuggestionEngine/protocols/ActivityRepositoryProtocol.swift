@@ -11,6 +11,6 @@ import Foundation
 
 public protocol ActivityRepositoryProtocol<ActivityType> {
     associatedtype ActivityType: ActivityProtocol
-    func fetchAllActivities() -> [ActivityType]
+    func catalog() -> [ActivityType]
 }
 

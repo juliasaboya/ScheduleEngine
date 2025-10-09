@@ -9,7 +9,7 @@ import Foundation
 public protocol UserProtocol {
     var availableTime: Int { get }
     var goals: [Goal] { get }
-    var intensity: Intensity { get }
+    var intensity: Intensity? { get }
     var locations: [LocationType] { get }
     var activitiesIDs: [UUID] { get }
 }
