@@ -26,7 +26,7 @@ extension SuggestionEngineService {
         // 1. Unificar preferências.
         let goals = options.goals ?? user.goals
         let locations = options.locations ?? user.locations
-        let intensity = options.intensity ?? user.intensity
+        let intensity = options.intensity
         let availableTime = options.availableTime ?? user.availableTime
         
         // 2. Buscar todas as atividades.
