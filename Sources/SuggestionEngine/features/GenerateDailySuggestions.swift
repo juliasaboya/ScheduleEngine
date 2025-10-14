@@ -17,7 +17,6 @@ extension SuggestionEngineService {
         user: U,
         options: SetOption,
         repository: R,
-        limit: Int? = 4,
         scoringWeight: ScoringWeights? = nil
     ) -> [SuggestedActivity<A>] where R.ActivityType == A {
         
@@ -59,8 +58,8 @@ extension SuggestionEngineService {
             if hasLocationMatch { score += weights.locationMatch }
             
             // Pontuação por intensidade (Peso 5 para exato, 2 para próximo)
-            if let userIntensity = intensity {
-                let intensityDifference = abs(userIntensity.rawValue - activity.intensity.rawValue)
+            if let optionIntensity = intensity {
+                let intensityDifference = abs(optionIntensity.rawValue - activity.intensity.rawValue)
                 if intensityDifference == 0 { score += weights.exactIntensityMatch }
                 else if intensityDifference == 1 { score += weights.adjacentIntensityMatch }
             }
@@ -71,7 +70,7 @@ extension SuggestionEngineService {
             return (activity: suggestedActivity, score: score)
         }
         
-        // 4. Ordena e retorna as 4 melhores.
+        // 4. Ordena e retorna todas as atividades em ordem decrescente de pontuação.
         let sortedSuggestions = scoredActivities
             .sorted { $0.score > $1.score }
             .map {  $0.activity }
