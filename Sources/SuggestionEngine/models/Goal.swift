@@ -12,23 +12,19 @@ import Foundation
 public enum Goal: Int16, Codable, Sendable, CaseIterable {
     case loseWeight = 0
     case gainMuscle = 1
-    case improveFitness = 2
-    case increaseFlexibilityAndMobility = 3
-    case healthAndWellBeing = 4
-    case socialization = 5
+    case improveCondition = 2
+    case flexibility = 3
 
     public init(from decoder: Decoder) throws {
         let container = try decoder.singleValueContainer()
         if let intValue = try? container.decode(Int16.self) {
-            self = Goal(rawValue: intValue) ?? .healthAndWellBeing
+            self = Goal(rawValue: intValue) ?? .improveCondition
         } else if let stringValue = try? container.decode(String.self) {
             switch stringValue {
             case "loseWeight": self = .loseWeight
             case "gainMuscle": self = .gainMuscle
-            case "improveFitness": self = .improveFitness
-            case "increaseFlexibilityAndMobility": self = .increaseFlexibilityAndMobility
-            case "healthAndWellBeing": self = .healthAndWellBeing
-            case "socialization": self = .socialization
+            case "improveCondition": self = .improveCondition
+            case "flexibility": self = .flexibility
             default:
                 throw DecodingError.dataCorruptedError(in: container, debugDescription: "Valor inválido: \(stringValue)")
             }
