@@ -10,5 +10,5 @@ public protocol UserProtocol {
     var availableTime: Int { get }
     var goals: [Goal] { get }
     var locations: [LocationType] { get }
-    var activitiesIDs: [UUID] { get }
+    var activitiesIDs: [String] { get }
 }

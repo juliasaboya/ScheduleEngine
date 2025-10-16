@@ -7,7 +7,7 @@
 import Foundation
 
 public protocol ActivityProtocol {
-    var id: UUID { get }
+    var id: String { get }
     var goals: [Goal] { get }
     var intensity: Intensity { get }
     var locations: [LocationType] { get }

@@ -10,7 +10,7 @@ import Foundation
 struct MockData {
     
     struct MockActivity: ActivityProtocol, Equatable, Sendable {
-        let id: UUID
+        let id: String
         let name: String // Propriedade extra para facilitar os asserts
         let goals: [Goal]
         let intensity: Intensity
@@ -24,12 +24,12 @@ struct MockData {
         var goals: [Goal]
         var intensity: Intensity
         var locations: [LocationType]
-        var activitiesIDs: [UUID]
+        var activitiesIDs: [String]
     }
     
-    static let ballet = MockActivity(id: UUID(), name: "Ballet", goals: [.increaseFlexibilityAndMobility, .gainMuscle], intensity: .medium, locations: [.gym], minTime: 20, maxTime: 60)
-    static let bodybuilding = MockActivity(id: UUID(), name: "Musculação", goals: [.gainMuscle], intensity: .high, locations: [.gym], minTime: 45, maxTime: 90)
-    static let running = MockActivity(id: UUID(), name: "Corrida", goals: [.improveFitness, .loseWeight], intensity: .high, locations: [.outdoor], minTime: 15, maxTime: 45)
+    static let ballet = MockActivity(id: "DAN-BAL-001", name: "Ballet", goals: [.increaseFlexibilityAndMobility, .gainMuscle], intensity: .medium, locations: [.gym], minTime: 20, maxTime: 60)
+    static let bodybuilding = MockActivity(id: "FOR-MUS-001", name: "Musculação", goals: [.gainMuscle], intensity: .high, locations: [.gym], minTime: 45, maxTime: 90)
+    static let running = MockActivity(id: "AER-COR-001", name: "Corrida", goals: [.improveFitness, .loseWeight], intensity: .high, locations: [.outdoor], minTime: 15, maxTime: 45)
     
     static let allActivities = [ballet, bodybuilding, running]
 }

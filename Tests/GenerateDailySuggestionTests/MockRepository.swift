@@ -12,7 +12,7 @@ class MockActivityRepository: ActivityRepositoryProtocol {
     
     var activities: [MockData.MockActivity] = []
 
-    func fetchAllActivities() -> [MockData.MockActivity] {
+    func catalog() -> [MockData.MockActivity] {
         return activities
     }
 }

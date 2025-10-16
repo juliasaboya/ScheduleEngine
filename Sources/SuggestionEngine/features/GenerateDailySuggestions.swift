@@ -17,7 +17,6 @@ extension SuggestionEngineService {
         user: U,
         options: SetOption,
         repository: R,
-        limit: Int? = 4,
         scoringWeight: ScoringWeights? = nil
     ) -> [SuggestedActivity<A>] where R.ActivityType == A {
         
