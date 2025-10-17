@@ -21,9 +21,8 @@ public enum Intensity: Int16, Comparable, CaseIterable, Sendable, Decodable, Enc
         let container = try decoder.singleValueContainer()
         if let intValue = try? container.decode(Int16.self) {
 
-            print("PACKAGE - intValue: \(intValue)")
-
             self = Intensity(rawValue: intValue) ?? .low
+            print("PACKAGE - intValue: \(intValue)")
 
         } else if let stringValue = try? container.decode(String.self) {
             switch stringValue {
