@@ -10,17 +10,19 @@ import Foundation
 
 // Intensidades
 
-public enum Intensity: Int16, /*Comparable,*/ CaseIterable, Sendable, Decodable, Encodable {
+public enum Intensity: Int16, Comparable, CaseIterable, Sendable, Decodable, Encodable {
     case low = 1, medium = 2, high = 3
 
-//    public static func < (lhs: Intensity, rhs: Intensity) -> Bool {
-//        return lhs.rawValue < rhs.rawValue
-//    }
+    public static func < (lhs: Intensity, rhs: Intensity) -> Bool {
+        return lhs.rawValue < rhs.rawValue
+    }
 
     public init(from decoder: Decoder) throws {
         let container = try decoder.singleValueContainer()
         if let intValue = try? container.decode(Int16.self) {
-            print("intValue: \(intValue)")
+
+            print("PACKAGE - intValue: \(intValue)")
+
             self = Intensity(rawValue: intValue) ?? .low
 
         } else if let stringValue = try? container.decode(String.self) {
