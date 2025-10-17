@@ -25,7 +25,7 @@ final class SuggestionEngineTests: XCTestCase {
     
     func test_generateSuggestions_whenUserHasLimitedTime_returnsOnlyFittingActivities() {
         // Arrange
-        let user = MockData.MockUser(availableTime: 18, goals: [.improveFitness], intensity: .medium, locations: [.outdoor], activitiesIDs: [])
+        let user = MockData.MockUser(availableTime: 18, goals: [.improveCondition], intensity: .medium, locations: [.outdoor], activitiesIDs: [])
         
         // Act
         let suggestions = SuggestionEngineService.generateDailySuggestions(user: user, options: SetOption(), repository: mockRepository)
@@ -38,7 +38,7 @@ final class SuggestionEngineTests: XCTestCase {
     
     func test_generateSuggestions_whenUserHasSpecificActivityIDs_returnsOnlyThoseActivities() {
         // Arrange
-        let user = MockData.MockUser(availableTime: 60, goals: [.increaseFlexibilityAndMobility], intensity: .low, locations: [.home], activitiesIDs: [MockData.ballet.id])
+        let user = MockData.MockUser(availableTime: 60, goals: [.flexibility], intensity: .low, locations: [.home], activitiesIDs: [MockData.ballet.id])
         
         // Act
         let suggestions = SuggestionEngineService.generateDailySuggestions(user: user, options: SetOption(), repository: mockRepository)
@@ -51,10 +51,10 @@ final class SuggestionEngineTests: XCTestCase {
     func test_generateSuggestions_calculatesCorrectSuggestedDuration() {
         // Arrange
         // O usuário tem 30 min, mas a corrida tem um máximo de 45. A sugestão deve ser 30.
-        let user1 = MockData.MockUser(availableTime: 30, goals: [.improveFitness], intensity: .medium, locations: [.outdoor], activitiesIDs: [])
+        let user1 = MockData.MockUser(availableTime: 30, goals: [.improveCondition], intensity: .medium, locations: [.outdoor], activitiesIDs: [])
         
         // O usuário tem 60 min, mas a corrida tem um máximo de 45. A sugestão deve ser 45.
-        let user2 = MockData.MockUser(availableTime: 60, goals: [.improveFitness], intensity: .medium, locations: [.outdoor], activitiesIDs: [])
+        let user2 = MockData.MockUser(availableTime: 60, goals: [.improveCondition], intensity: .medium, locations: [.outdoor], activitiesIDs: [])
         
         // Act
         let suggestions1 = SuggestionEngineService.generateDailySuggestions(user: user1, options: SetOption(), repository: mockRepository)
