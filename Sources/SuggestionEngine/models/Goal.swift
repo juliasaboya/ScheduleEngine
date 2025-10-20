@@ -9,11 +9,13 @@ import Foundation
 // MARK: - Enums
 
 // Objetivos
-public enum Goal: Int16, Codable, Sendable, CaseIterable {
+public enum Goal: Int16, Codable, Sendable, CaseIterable, Identifiable {
     case loseWeight = 0
     case gainMuscle = 1
     case improveCondition = 2
     case flexibility = 3
+    
+    public var id: Int16 { self.rawValue }
 
     public init(from decoder: Decoder) throws {
         let container = try decoder.singleValueContainer()
