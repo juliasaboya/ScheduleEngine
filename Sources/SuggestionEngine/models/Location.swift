@@ -9,8 +9,10 @@ import Foundation
 // MARK: - Enums
 
 // Locais
-public enum LocationType: Int16, Codable, Sendable {
+public enum LocationType: Int16, Codable, Sendable, Identifiable {
     case home = 1, gym = 2, work = 3, outdoor = 4
+    
+    public var id: Int16 { self.rawValue }
     
     public init(from decoder: Decoder) throws {
         let container = try decoder.singleValueContainer()
