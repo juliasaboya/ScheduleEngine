@@ -9,7 +9,7 @@ import Foundation
 // MARK: - Enums
 
 // Locais
-public enum LocationType: Int16, Codable, Sendable, Identifiable {
+public enum LocationType: Int16, Codable, Sendable, Identifiable, CaseIterable {
     case home = 1, gym = 2, work = 3, outdoor = 4
     
     public var id: Int16 { self.rawValue }
