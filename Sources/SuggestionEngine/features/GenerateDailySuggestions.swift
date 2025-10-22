@@ -25,7 +25,7 @@ extension SuggestionEngineService {
         // 1. Unificar preferências.
         let goals = options.goals ?? user.goals
         let locations = options.locations ?? user.locations
-        let intensity = options.intensity
+        let intensity = options.intensity ?? user.intensity
         let availableTime = options.availableTime ?? user.availableTime
         
         // 2. Buscar todas as atividades.
@@ -38,6 +38,7 @@ extension SuggestionEngineService {
             activitiesToConsider = allActivities.filter { userPreferredIDs.contains($0.id) }
         } else {
             activitiesToConsider = allActivities
+            print("--> Pacote Considerou todas as atividades <--")
         }
         
         // 4. Algoritmo de pontuação e filtragem.
