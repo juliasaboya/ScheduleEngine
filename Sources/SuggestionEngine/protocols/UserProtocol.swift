@@ -11,4 +11,5 @@ public protocol UserProtocol {
     var goals: [Goal] { get }
     var locations: [LocationType] { get }
     var activitiesIDs: [String] { get }
+    var intensity: Intensity { get }
 }

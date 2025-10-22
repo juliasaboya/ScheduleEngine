@@ -12,7 +12,7 @@ extension SuggestionEngineService {
     ///   - options: Um `SetOption` com valores que sobrepõem temporariamente as preferências do usuário.
     ///   - repository: Um objeto que conforma com `ActivityRepositoryProtocol` e fornece as atividades.
     /// - Returns: Um array de `SuggestedActivity` contendo as melhores sugestões ordenadas por relevância.
-
+    
     public static func generateDailySuggestions<U: UserProtocol, A: ActivityProtocol, R: ActivityRepositoryProtocol>(
         user: U,
         options: SetOption,
@@ -59,11 +59,11 @@ extension SuggestionEngineService {
             if hasLocationMatch { score += weights.locationMatch }
             
             // Pontuação por intensidade (Peso 5 para exato, 2 para próximo)
-            if let userIntensity = intensity {
-                let intensityDifference = abs(userIntensity.rawValue - activity.intensity.rawValue)
-                if intensityDifference == 0 { score += weights.exactIntensityMatch }
-                else if intensityDifference == 1 { score += weights.adjacentIntensityMatch }
-            }
+            let userIntensity = intensity
+            let intensityDifference = abs(userIntensity.rawValue - activity.intensity.rawValue)
+            if intensityDifference == 0 { score += weights.exactIntensityMatch }
+            else if intensityDifference == 1 { score += weights.adjacentIntensityMatch }
+            
             
             guard score > 0 else { return nil }
             
@@ -77,7 +77,7 @@ extension SuggestionEngineService {
             .map {  $0.activity }
         
         return sortedSuggestions
-
+        
     }
 }
 
