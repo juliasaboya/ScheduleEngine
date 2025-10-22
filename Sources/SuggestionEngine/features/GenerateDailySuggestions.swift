@@ -34,7 +34,7 @@ extension SuggestionEngineService {
         // 3. Determina quais atividades considerar.
         let activitiesToConsider: [A]
         if !user.activitiesIDs.isEmpty {
-            print("USER ACTIVITIESI DS", user.activitiesIDs)
+            print("USER ACTIVITIESI DS", user.activitiesIDs.count)
             let userPreferredIDs = Set(user.activitiesIDs)
             activitiesToConsider = allActivities.filter { userPreferredIDs.contains($0.id) }
         } else {
