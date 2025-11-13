@@ -8,6 +8,7 @@ import Foundation
 
 public protocol ActivityProtocol {
     var id: String { get }
+    var name: String { get }
     var goals: [Goal] { get }
     var intensity: Intensity { get }
     var locations: [LocationType] { get }
