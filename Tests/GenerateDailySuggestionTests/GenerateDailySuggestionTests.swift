@@ -29,8 +29,7 @@ final class SuggestionEngineTests: XCTestCase {
         
         // Act
         let suggestions = SuggestionEngineService.generateDailySuggestions(user: user, options: SetOption(), repository: mockRepository)
-        
-        print(suggestions)
+
         // Assert
         XCTAssertEqual(suggestions.count, 1, "Apenas a corrida (min 15) deveria ser sugerida, Ballet (min 20) e Musculação (min 45) não.")
         XCTAssertEqual(suggestions.first?.activity.name, "Corrida")

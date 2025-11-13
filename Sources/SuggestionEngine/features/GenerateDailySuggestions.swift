@@ -36,10 +36,8 @@ extension SuggestionEngineService {
         if !user.activitiesIDs.isEmpty {
             let userPreferredIDs = Set(user.activitiesIDs)
             activitiesToConsider = allActivities.filter { userPreferredIDs.contains($0.id) }
-            print("USER ACTIVITIESI DS", user.activitiesIDs.count)
         } else {
             activitiesToConsider = allActivities
-            print("--> Pacote Considerou todas as atividades <--")
         }
         
         // 4. Algoritmo de pontuação e filtragem.
